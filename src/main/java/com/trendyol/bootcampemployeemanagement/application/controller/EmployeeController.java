@@ -70,7 +70,7 @@ public class EmployeeController {
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.TRACE)
+    @RequestMapping(value = "/trace", method = RequestMethod.TRACE)
     public ResponseEntity<String> trace() {
         return new ResponseEntity<>("TRACE response", HttpStatus.OK);
     }
@@ -85,7 +85,7 @@ public class EmployeeController {
         }
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.OPTIONS)
+    @RequestMapping(method = RequestMethod.OPTIONS)
     public ResponseEntity<Void> options(HttpServletResponse response) {
         response.setHeader("Allow", "GET,HEAD,POST,PUT,DELETE,OPTIONS");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
