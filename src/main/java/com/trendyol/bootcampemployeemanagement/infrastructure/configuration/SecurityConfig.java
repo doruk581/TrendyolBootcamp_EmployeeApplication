@@ -1,5 +1,6 @@
 package com.trendyol.bootcampemployeemanagement.infrastructure.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,6 +24,7 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String BEARER_TOKEN = "Bearer b40c3428-83f2-4b26-8046-cdbc4db540f6";
@@ -33,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable() // CSRF korumasını devre dışı bırak
                 .authorizeRequests()
                 .antMatchers("/api/v1/employees/**", "/").permitAll() // Herkese açık
+                .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**").permitAll()
                 .antMatchers("/api/authentication/basic/**").authenticated() // Sadece kimlik doğrulanmış kullanıcılar
                 .antMatchers("/api/authentication/bearer/**").authenticated() // Sadece kimlik doğrulanmış kullanıcılar
                 .anyRequest().permitAll() // Diğer tüm istekler için kimlik doğrulama yapma
@@ -75,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     throws ServletException, IOException {
                 String authorization = request.getHeader("Authorization");
 
-                if (request.getRequestURI().startsWith("/api/v1/employees") || request.getRequestURI().startsWith("/api/authentication/basic/basic-authentication")) {
+                if (request.getRequestURI().startsWith("/api/v1/employees") || request.getRequestURI().startsWith("/api/authentication/basic/basic-authentication") || request.getRequestURI().startsWith("/swagger") ||request.getRequestURI().startsWith("/v2/api-docs")) {
                     // Bu patika için yetkilendirme yapma
                     filterChain.doFilter(request, response);
                     return;
@@ -85,6 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 } else {
                     // Token eşleşmedi, yetkilendirme başarısız.
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    log.warn("Unauthorized request to {}", request.getRequestURI());
                 }
             }
         };
