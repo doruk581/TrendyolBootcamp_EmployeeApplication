@@ -71,6 +71,6 @@ public class GlobalExceptionHandler {
     // Genel bir exception tipi için handler
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("Unkown exception occurred", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
